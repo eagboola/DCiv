@@ -1,0 +1,38 @@
+int analogVal = 0;
+double vPerDiv = 0;
+double voltage = 0;
+double celcius = 0;
+double fahrenheit = 0;
+int tempVal = 0; //integer temp val and in the loop keep it within certain limits
+int rgbVal = 0;
+
+
+void setup() {
+    Particle.variable("DigitalValue", analogVal);
+    Particle.variable("VPerDiv", vPerDiv);
+    Particle.variable("Voltage", voltage);
+    Particle.variable("TempC", celcius);
+    Particle.variable("TempF", fahrenheit);
+    RGB.control(true); //we can now control color
+    /* we're going to change the color of the led based on the temperature
+    
+    */
+    
+    
+}
+
+void loop() {
+    analogVal = analogRead(0);
+    vPerDiv = 3.3/4096;
+    voltage = analogVal * vPerDiv;
+    celcius = (voltage - 0.5) * 100;
+    fahrenheit = ((celcius * 9) / 5) + 32;
+    
+    //keep tempVal between 960 and 1000//
+    tempVal = constrain(analogVal, 940, 1000);
+    rgbVal = map(tempVal, 940, 1000, 0, 255);  //map allows conversion from one numeric range to another. here 940 is mapped to 0 and 1000 is mapped to 255
+    RGB.color(rgbVal, 0, 255 - rgbVal);
+    
+    
+    Particle.publish("TEMP");
+}
