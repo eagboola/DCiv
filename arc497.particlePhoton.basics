@@ -1,0 +1,67 @@
+int WildRed =0;
+int WildBlue = 0;
+int WildGreen = 0;
+int WildBright = 0;
+int LED = D0;
+bool state = false;
+
+int AnVal = 0;
+
+
+
+
+void setup() {
+RGB.control(true);
+
+pinMode(7, OUTPUT);
+pinMode(0, OUTPUT);
+digitalWrite(LED, HIGH);
+//Particle.variable("Analog Value", AnVal);
+/*HIGH, 1, and true are equivalent values for the high-voltage digital state.
+LOW, 0, and false are the low-voltage digital state.*/
+
+
+
+Particle.function("TOGGLE", toggle);
+
+}
+
+void loop() {
+    WildRed = random(0,255);
+    WildBlue = random(0,255);
+    WildGreen = random(0,255);
+    WildBright = random(0,255);
+    RGB.color(WildRed, WildGreen, WildBlue);
+    RGB.brightness(WildBright);
+    
+    delay(50);
+        
+    digitalWrite(7, HIGH);
+    delay(100);
+    digitalWrite(7, LOW);
+    delay(1000);
+   
+   
+    AnVal = analogRead(0);
+    
+   
+    for(int i = 0; i<255; i++){
+        RGB.color(0, 0, i);
+        delay(5);
+        RGB.color(i,0,0);
+        delay(5);
+    }
+    
+    
+    
+    delay(1000);
+    Particle.publish("MESSAGE", "HELLO");
+    Particle.publish("Analog Value", AnVal);
+    
+
+}
+
+int toggle(String args){
+    int t = args.toInt();
+    digitalWrite(LED, t);
+}
