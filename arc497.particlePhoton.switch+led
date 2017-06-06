@@ -1,0 +1,72 @@
+
+/*these first lines aren't exactly variables
+
+*/
+#define SWITCH_PIN 1
+#define LED_PIN 2
+
+Timer bounceTimer(10, bounceFunction, 1);
+
+bool switchState = 0;
+bool switchValue = 0;
+
+bool direction = 1;
+int fadeCounter = 0;
+
+void setup() {
+    pinMode(SWITCH_PIN, INPUT_PULLUP);
+    pinMode(LED_PIN, OUTPUT);
+   
+}
+
+void loop() {
+    
+    switchValue = digitalRead(SWITCH_PIN);   
+        
+        if (switchValue==0){
+            bounceTimer.start();
+            while(bounceTimer.isActive()){
+                //do nothing
+            }
+            //digitalWrite(LED_PIN, HIGH);
+            //Particle.publish("button", 0);
+            
+            
+        }
+        
+        
+        if(switchState == 1){
+            fade();
+        }
+        
+        
+        else    {
+            digitalWrite(LED_PIN, LOW);
+            
+            //Particle.publish("button", 1);
+        }
+
+}
+
+void bounceFunction(){
+    switchState = !switchState;
+    Particle.publish("Button", String(switchState));
+}
+
+void fade(){
+    if(direction==1){
+        fadeCounter++;
+    }
+    else{
+        fadeCounter--;
+    }
+    
+    if(fadeCounter >= 255){
+        direction = 0;
+    }
+    if(fadeCounter <=0){
+        direction = 1;
+    }
+    analogWrite(LED_PIN, fadeCounter);
+    delay(10);
+}
