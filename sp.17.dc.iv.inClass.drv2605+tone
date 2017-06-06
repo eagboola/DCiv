@@ -1,0 +1,92 @@
+// This #include statement was automatically added by the Particle IDE.
+#include <adafruit-drv2605-photon.h>
+
+// This #include statement was automatically added by the Particle IDE.
+//#include <Adafruit_DRV2605.h>
+Adafruit_DRV2605 drv;
+
+Timer buzzTimer(1000, buzz);
+Timer blinkTimer(1000, noBlink);
+//Timer beepTimer(1500, beep);
+
+int notes[] = {4000, 1500, 1750, 3000, 2500, 4750}; //an array of integer values
+
+bool pirVal = 0;
+
+void setup() {
+  /*Serial.begin(9600);
+  Serial.println("DRV test");*/
+  drv.begin();
+
+  drv.selectLibrary(1);
+
+  // I2C trigger by sending 'go' command
+  // default, internal trigger when sending GO command
+  drv.setMode(DRV2605_MODE_INTTRIG);
+  buzzTimer.start(); 
+  //beepTimer.start();
+  
+  pinMode(2, OUTPUT);//make pin d2 an output
+  pinMode(4, INPUT);
+  attachInterrupt(4, blink, CHANGE);
+  pinMode(7, OUTPUT);
+  
+  
+}
+
+uint8_t effect = 1;
+
+void loop() {
+  /*  pirVal = digitalRead(4);
+    if(pirVal == 1 ){
+        digitalWrite(7, HIGH);
+        beep();
+    }
+    else{
+        digitalWrite(7, LOW);
+        } 
+        
+    if(blinkTimer.isActive() == 0){
+        digitalWrite(7, LOW);
+    }
+    */
+    }
+ 
+
+
+void buzz(){
+   //  Serial.print("Effect #"); Serial.println(effect);
+
+  // set the effect to play
+  drv.setWaveform(1, 1);  // play effect
+  drv.setWaveform(1, 2);       // end waveform
+
+  // play the effect!
+  drv.go();
+
+  // wait a bit
+  //delay(1000);
+
+  /*effect++;
+  if (effect > 117) effect = 1;*/
+}
+
+void beep(){
+    
+    for (int i =0; i < arraySize(notes); i++){
+    
+    tone(2, 0);  //pin, frequency, duration
+    delay(200);
+    
+    }
+}
+
+
+void blink(){
+    digitalWrite(7, HIGH);
+    blinkTimer.start();
+}
+
+void noBlink(){
+    digitalWrite(7, LOW);
+}
